@@ -1,4 +1,4 @@
-package vex
+package vex_go
 
 import (
 	"bytes"

@@ -1,4 +1,4 @@
-package vex
+package vex_go
 
 import (
 	"bytes"
@@ -57,7 +57,7 @@ func (c *Client) GetFlags(ctx context.Context, accountId, projectId string) ([]*
 }
 
 func (c *Client) GetFlag(ctx context.Context, accountId, projectId, flagId string) (*Flag, error) {
-	url := fmt.Sprintf("/accounts/%s/projects/%s/flag/%s", accountId, projectId, flagId)
+	url := fmt.Sprintf("/accounts/%s/projects/%s/flags/%s", accountId, projectId, flagId)
 	data, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err

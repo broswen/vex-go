@@ -1,4 +1,4 @@
-package vex
+package vex_go
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 type Client struct {
 	apiToken string
 	host     string
+	scheme   string
 	client   *http.Client
 	debug    bool
 }
@@ -19,6 +20,8 @@ type Client struct {
 func New(apiToken string, options ...ClientOption) (*Client, error) {
 	client := &Client{
 		apiToken: apiToken,
+		host:     "vex.broswen.com",
+		scheme:   "https://",
 		client:   &http.Client{},
 	}
 	for _, option := range options {
@@ -35,6 +38,12 @@ func WithHost(host string) ClientOption {
 	}
 }
 
+func WithScheme(scheme string) ClientOption {
+	return func(client *Client) {
+		client.scheme = scheme
+	}
+}
+
 func WithDebug(debug bool) ClientOption {
 	return func(client *Client) {
 		client.debug = debug
@@ -42,7 +51,7 @@ func WithDebug(debug bool) ClientOption {
 }
 
 func (c *Client) doRequestContext(ctx context.Context, method, url string, body io.Reader) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, method, c.host+url, body)
+	req, err := http.NewRequestWithContext(ctx, method, c.scheme+c.host+url, body)
 	if err != nil {
 		return nil, err
 	}

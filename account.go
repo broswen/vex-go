@@ -1,4 +1,4 @@
-package vex
+package vex_go
 
 import (
 	"bytes"
@@ -39,4 +39,10 @@ func (c *Client) UpdateAccount(ctx context.Context, a *Account) error {
 		return err
 	}
 	return json.NewDecoder(bytes.NewReader(data)).Decode(a)
+}
+
+func (c *Client) DeleteAccount(ctx context.Context, id string) error {
+	url := fmt.Sprintf("/accounts/%s", id)
+	_, err := c.doRequestContext(ctx, http.MethodDelete, url, nil)
+	return err
 }
