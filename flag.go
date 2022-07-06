@@ -30,7 +30,7 @@ func (f Flag) ToJSON() ([]byte, error) {
 }
 
 func (c *Client) CreateFlag(ctx context.Context, f *Flag) error {
-	url := fmt.Sprintf("/accounts/%s/projects/%s/flags", f.AccountID, f.ID)
+	url := fmt.Sprintf("/accounts/%s/projects/%s/flags", f.AccountID, f.ProjectID)
 	j, err := json.Marshal(f)
 	if err != nil {
 		return err
