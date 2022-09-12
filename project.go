@@ -6,13 +6,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type Project struct {
-	ID          string `json:"id"`
-	AccountID   string `json:"account_id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          string    `json:"id"`
+	AccountID   string    `json:"account_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	CreatedOn   time.Time `json:"created_on"`
+	ModifiedOn  time.Time `json:"modified_on"`
 }
 
 func (c *Client) CreateProject(ctx context.Context, p *Project) error {

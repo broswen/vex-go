@@ -6,12 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type Account struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	CreatedOn   time.Time `json:"created_on"`
+	ModifiedOn  time.Time `json:"modified_on"`
 }
 
 func (c *Client) GetAccount(ctx context.Context, id string) (*Account, error) {

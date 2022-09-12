@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type FlagType string
@@ -17,12 +18,14 @@ const (
 )
 
 type Flag struct {
-	ID        string   `json:"id"`
-	ProjectID string   `json:"project_id"`
-	AccountID string   `json:"account_id"`
-	Key       string   `json:"key"`
-	Type      FlagType `json:"type"`
-	Value     string   `json:"value"`
+	ID         string    `json:"id"`
+	ProjectID  string    `json:"project_id"`
+	AccountID  string    `json:"account_id"`
+	Key        string    `json:"key"`
+	Type       FlagType  `json:"type"`
+	Value      string    `json:"value"`
+	CreatedOn  time.Time `json:"created_on"`
+	ModifiedOn time.Time `json:"modified_on"`
 }
 
 func (f Flag) ToJSON() ([]byte, error) {
