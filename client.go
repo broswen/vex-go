@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Client struct {
@@ -22,7 +23,9 @@ func New(apiToken string, options ...ClientOption) (*Client, error) {
 		apiToken: apiToken,
 		host:     "vex.broswen.com",
 		scheme:   "https://",
-		client:   &http.Client{},
+		client: &http.Client{
+			Timeout: time.Second * 3,
+		},
 	}
 	for _, option := range options {
 		option(client)
