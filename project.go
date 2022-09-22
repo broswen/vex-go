@@ -29,7 +29,7 @@ type ListProjectResponse struct {
 }
 
 func (c *Client) CreateProject(ctx context.Context, p *Project) error {
-	url := fmt.Sprintf("/accounts/%s/projects/%s", p.AccountID, p.ID)
+	url := fmt.Sprintf("/accounts/%s/projects", p.AccountID)
 	j, err := json.Marshal(p)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func (c *Client) CreateProject(ctx context.Context, p *Project) error {
 		return err
 	}
 	pr := &ProjectResponse{}
-	err = json.Unmarshal(resp, p)
+	err = json.Unmarshal(resp, pr)
 	if err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func (c *Client) UpdateProject(ctx context.Context, p *Project) error {
 		return err
 	}
 	pr := &ProjectResponse{}
-	err = json.Unmarshal(resp, p)
+	err = json.Unmarshal(resp, pr)
 	if err != nil {
 		return err
 	}

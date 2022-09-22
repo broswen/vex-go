@@ -74,6 +74,27 @@ func TestGetProject(t *testing.T) {
 	}
 }
 
+func TestCreateProject(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method, "Expected method 'POST', got %s", r.Method)
+		w.Header().Set("content-type", "application/json")
+		fmt.Fprintf(w, projectJSON)
+	}
+	setup()
+	defer teardown()
+	mux.HandleFunc("/accounts/abc123/projects", handler)
+	p := &Project{
+		ID:          "abc123",
+		AccountID:   "abc123",
+		Name:        "test project",
+		Description: "test project",
+	}
+	err := client.CreateProject(context.Background(), p)
+	if assert.NoError(t, err) {
+		assert.Equal(t, project, p)
+	}
+}
+
 func TestGetProjects(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodGet, r.Method, "Expected method 'GET', got %s", r.Method)
