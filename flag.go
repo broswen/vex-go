@@ -32,45 +32,62 @@ func (f Flag) ToJSON() ([]byte, error) {
 	return json.Marshal(&f)
 }
 
+type FlagResponse struct {
+	Data Flag `json:"data"`
+	Response
+}
+
+type ListFlagResponse struct {
+	Data []*Flag `json:"data"`
+	Response
+}
+
 func (c *Client) CreateFlag(ctx context.Context, f *Flag) error {
 	url := fmt.Sprintf("/accounts/%s/projects/%s/flags", f.AccountID, f.ProjectID)
 	j, err := json.Marshal(f)
 	if err != nil {
 		return err
 	}
-	data, err := c.doRequestContext(ctx, http.MethodPost, url, bytes.NewReader(j))
+	resp, err := c.doRequestContext(ctx, http.MethodPost, url, bytes.NewReader(j))
 	if err != nil {
 		return err
 	}
-	return json.NewDecoder(bytes.NewReader(data)).Decode(f)
+
+	fr := &FlagResponse{}
+	err = json.Unmarshal(resp, fr)
+	if err != nil {
+		return err
+	}
+	*f = fr.Data
+	return nil
 }
 
 func (c *Client) GetFlags(ctx context.Context, accountId, projectId string) ([]*Flag, error) {
 	url := fmt.Sprintf("/accounts/%s/projects/%s/flags", accountId, projectId)
-	data, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
+	resp, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	var flags []*Flag
-	err = json.NewDecoder(bytes.NewReader(data)).Decode(&flags)
+	lf := &ListFlagResponse{}
+	err = json.Unmarshal(resp, lf)
 	if err != nil {
 		return nil, err
 	}
-	return flags, nil
+	return lf.Data, nil
 }
 
 func (c *Client) GetFlag(ctx context.Context, accountId, projectId, flagId string) (*Flag, error) {
 	url := fmt.Sprintf("/accounts/%s/projects/%s/flags/%s", accountId, projectId, flagId)
-	data, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
+	resp, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	var f Flag
-	err = json.NewDecoder(bytes.NewReader(data)).Decode(&f)
+	fr := &FlagResponse{}
+	err = json.Unmarshal(resp, fr)
 	if err != nil {
 		return nil, err
 	}
-	return &f, nil
+	return &fr.Data, nil
 }
 
 func (c *Client) UpdateFlag(ctx context.Context, f *Flag) error {
@@ -79,11 +96,17 @@ func (c *Client) UpdateFlag(ctx context.Context, f *Flag) error {
 	if err != nil {
 		return err
 	}
-	data, err := c.doRequestContext(ctx, http.MethodPut, url, bytes.NewReader(j))
+	resp, err := c.doRequestContext(ctx, http.MethodPut, url, bytes.NewReader(j))
 	if err != nil {
 		return err
 	}
-	return json.NewDecoder(bytes.NewReader(data)).Decode(f)
+	fr := &FlagResponse{}
+	err = json.Unmarshal(resp, fr)
+	if err != nil {
+		return err
+	}
+	*f = fr.Data
+	return nil
 }
 
 func (c *Client) DeleteFlag(ctx context.Context, f *Flag) error {

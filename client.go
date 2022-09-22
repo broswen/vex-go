@@ -18,6 +18,11 @@ type Client struct {
 	debug    bool
 }
 
+type Response struct {
+	Success bool     `json:"success"`
+	Errors  []string `json:"errors"`
+}
+
 func New(apiToken string, options ...ClientOption) (*Client, error) {
 	client := &Client{
 		apiToken: apiToken,

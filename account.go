@@ -17,18 +17,23 @@ type Account struct {
 	ModifiedOn  time.Time `json:"modified_on"`
 }
 
+type AccountResponse struct {
+	Data Account `json:"data"`
+	Response
+}
+
 func (c *Client) GetAccount(ctx context.Context, id string) (*Account, error) {
 	url := fmt.Sprintf("/accounts/%s", id)
-	data, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
+	resp, err := c.doRequestContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	a := &Account{}
-	err = json.NewDecoder(bytes.NewReader(data)).Decode(a)
+	a := &AccountResponse{}
+	err = json.Unmarshal(resp, a)
 	if err != nil {
 		return nil, err
 	}
-	return a, nil
+	return &a.Data, nil
 }
 
 func (c *Client) UpdateAccount(ctx context.Context, a *Account) error {
@@ -37,11 +42,17 @@ func (c *Client) UpdateAccount(ctx context.Context, a *Account) error {
 	if err != nil {
 		return err
 	}
-	data, err := c.doRequestContext(ctx, http.MethodPut, url, bytes.NewReader(j))
+	resp, err := c.doRequestContext(ctx, http.MethodPut, url, bytes.NewReader(j))
 	if err != nil {
 		return err
 	}
-	return json.NewDecoder(bytes.NewReader(data)).Decode(a)
+	ar := &AccountResponse{}
+	err = json.Unmarshal(resp, a)
+	if err != nil {
+		return err
+	}
+	*a = ar.Data
+	return nil
 }
 
 func (c *Client) DeleteAccount(ctx context.Context, id string) error {
