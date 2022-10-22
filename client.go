@@ -12,7 +12,7 @@ import (
 
 type Client struct {
 	apiToken string
-	host     string
+	baseUrl  string
 	scheme   string
 	client   *http.Client
 	debug    bool
@@ -26,7 +26,7 @@ type Response struct {
 func New(apiToken string, options ...ClientOption) (*Client, error) {
 	client := &Client{
 		apiToken: apiToken,
-		host:     "vex.broswen.com",
+		baseUrl:  "vex.broswen.com/api",
 		scheme:   "https://",
 		client: &http.Client{
 			Timeout: time.Second * 3,
@@ -40,9 +40,9 @@ func New(apiToken string, options ...ClientOption) (*Client, error) {
 
 type ClientOption func(client *Client)
 
-func WithHost(host string) ClientOption {
+func WithBaseUrl(url string) ClientOption {
 	return func(client *Client) {
-		client.host = host
+		client.baseUrl = url
 	}
 }
 
@@ -59,7 +59,7 @@ func WithDebug(debug bool) ClientOption {
 }
 
 func (c *Client) doRequestContext(ctx context.Context, method, url string, body io.Reader) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, method, c.scheme+c.host+url, body)
+	req, err := http.NewRequestWithContext(ctx, method, c.scheme+c.baseUrl+url, body)
 	if err != nil {
 		return nil, err
 	}

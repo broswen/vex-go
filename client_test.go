@@ -15,7 +15,7 @@ func setup() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 	var err error
-	client, err = New("", WithHost(server.URL), WithScheme(""))
+	client, err = New("", WithBaseUrl(server.URL), WithScheme(""))
 	if err != nil {
 		panic(err)
 	}
